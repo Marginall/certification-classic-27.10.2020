@@ -5,28 +5,13 @@ export const filter = () => {
 	const $controls = $(document).find('input, select');
 	const currentPage = $filterForm.data('page');
 
-	const data = {
-		params: {
-			brand: [],
-			manufacturer: '',
-			model: '',
-			year: '',
-			price: []
-		},
-		pagination: {
-			sort: '',
-			perPage: '',
-			page: ''
-		}
-	};
-
 	const createGetParams = (data) => {
 		const url = new URL(window.location.href);
 		let tempData = {};
+		url.search = '';
 
 		if (data.params && data.pagination) {
 			tempData = Object.assign(tempData, data.params, data.pagination);
-			console.log(tempData.year);
 
 			url.searchParams.set('page', tempData.page);
 
@@ -57,56 +42,69 @@ export const filter = () => {
 
 	$controls.on('change', () => {
 		const brands = [];
+		const data = {
+			params: {
+				brand: [],
+				manufacturer: '',
+				model: '',
+				year: '',
+				price: []
+			},
+			pagination: {
+				sort: '',
+				perPage: '',
+				page: ''
+			}
+		};
 
 		$controls.each((i, el) => {
 			const $el = $(el);
-			const brand = $el.prop('checked') ? $el.parent().find('span').text() : null;
-			const manufacturer =
-				$el.attr('name') === 'marka' ? $el.find('option:selected').text() : null;
-			const model =
-				$el.attr('name') === 'model' ? $el.find('option:selected').text() : null;
-			const year = $el.attr('name') === 'year' ? parseInt($el.val()) : null;
-			const minPrice = parseInt($('#price-from').val());
-			const maxPrice = parseInt($('#price-to').val());
-			const sort =
-				$el.attr('name') === 'sort' ? $el.find('option:selected').text() : null;
-			const perPage =
-				$el.attr('name') === 'per_page'
-					? $el.find('option:selected').text()
-					: null;
+			let val = $el.val();
+			let brand, manufacturer, model, year, minPrice, maxPrice, sort, perPage;
 
-			if (brand) {
-				brands.push(brand);
-				data.params.brand = brands;
-			}
-
-			if (manufacturer && !isNaN($el.val())) {
-				data.params.manufacturer = manufacturer;
-			}
-
-			if (model && !isNaN($el.val())) {
-				data.params.model = model;
-			}
-
-			if (year) {
-				data.params.year = year;
-			}
-
-			if (minPrice && maxPrice) {
-				data.params.price = [];
-				data.params.price.push(minPrice, maxPrice);
-			}
-
-			if (sort) {
-				data.pagination.sort = sort;
-			}
-
-			if (perPage) {
-				data.pagination.perPage = perPage;
-			}
-
-			if (currentPage !== '') {
-				data.pagination.page = currentPage;
+			switch ($el.attr('name')) {
+				case 'marka':
+					manufacturer = $el.find('option:selected').text();
+					if (manufacturer && !isNaN(val)) {
+						data.params.manufacturer = manufacturer;
+					}
+					break;
+				case 'model':
+					model = $el.find('option:selected').text();
+					if (model && !isNaN(val)) {
+						data.params.model = model;
+					}
+					break;
+				case 'year':
+					year = parseInt($el.val());
+					if (year && !isNaN(val)) {
+						data.params.year = year;
+					}
+					break;
+				case 'price-from':
+					minPrice = parseInt($el.val());
+					data.params.price.push(minPrice);
+					break;
+				case 'price-to':
+					maxPrice = parseInt($el.val());
+					data.params.price.push(maxPrice);
+					break;
+				case 'sort':
+					sort = $el.find('option:selected').text();
+					data.pagination.sort = sort;
+					break;
+				case 'per_page':
+					perPage = $el.find('option:selected').text();
+					data.pagination.perPage = perPage;
+					break;
+				case 'brand':
+					if ($el.prop('checked')) {
+						brand = $el.parent().find('span').text();
+						brands.push(brand);
+					}
+					data.params.brand = brands;
+					break;
+				default:
 			}
 		});
 
