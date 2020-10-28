@@ -1,10 +1,15 @@
 import $ from 'js#/lib/jquery';
+import goodsData from 'js#/data/goods';
+import {getElement} from './get-element';
 
 export const filter = () => {
 	const $filterForm = $('#filter');
 	const $controls = $(document).find('input, select');
 	const currentPage = $filterForm.data('page');
 
+	getElement(goodsData);
+
+	// console.log(goodsData);
 	const createGetParams = (data) => {
 		const url = new URL(window.location.href);
 		let tempData = {};
