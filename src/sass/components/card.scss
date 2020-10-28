@@ -1,12 +1,18 @@
 @import 'settings/all';
 
 .card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 	background-color: $background-surface;
 	border: 1px solid $border-default;
 	border-radius: 8px;
+	z-index: 2;
 
 	&:hover {
 		box-shadow: 0 0 microbe-rem(60) black;
+		z-index: 0;
 	}
 
 	&__top {
@@ -16,6 +22,9 @@
 	}
 
 	&__bottom {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
 		padding: microbe-rem(16) microbe-rem(20) microbe-rem(10);
 		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 	}

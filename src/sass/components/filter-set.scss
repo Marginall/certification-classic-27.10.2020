@@ -1,11 +1,13 @@
 @import 'settings/all';
 
 .filter-set {
+	position: relative;
 	border-width: 0;
 	font-size: microbe-rem(14);
 	padding: microbe-em(20, 14);
 	background: $background-surface;
 	border-radius: 0.25em;
+	z-index: 2;
 
 	&__name {
 		font-size: microbe-rem(16);
