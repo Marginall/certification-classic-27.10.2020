@@ -1,3 +1,5 @@
+import $ from 'js#/lib/jquery';
+
 export const filter = () => {
 	const $filterForm = $('#filter');
 	const $controls = $(document).find('input, select');
