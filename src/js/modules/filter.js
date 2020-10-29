@@ -9,7 +9,6 @@ export const filter = () => {
 
 	getElement(goodsData);
 
-	// console.log(goodsData);
 	const createGetParams = (data) => {
 		const url = new URL(window.location.href);
 		let tempData = {};
@@ -43,29 +42,25 @@ export const filter = () => {
 		}
 
 		window.history.pushState(null, null, url.href);
-
-		function parseUrlQuery() {
-			let data = {}, pair = false, param = false;
-			if(location.search) {
-				pair = (location.search.substr(1)).split('&');
-				for(let i = 0; i < pair.length; i ++) {
-					param = pair[i].split('=');
-					data[param[0]] = param[1];
-				}
-			}
-			return data;
-		}
-
-		makeProductFilter(parseUrlQuery());
 	};
 
-	const makeProductFilter = (params) => {
+	const makeProductFilter = (params, goods) => {
 		let tempData = {};
-		tempData = Object.entries(Object.assign(tempData, params));
+		let tempData2;
+		let newGoodsData = goods;
+		tempData = Object.assign(tempData, params.params, params.pagination);
+		tempData2 = Object.entries(Object.assign(tempData, params.params, params.pagination));
+		let result = [];
 
-		$(tempData).each((i, item) => {
-			console.log('filterParams', item);
+		const filterArr = function (val1, val2) {
+			return val1 == val2;
+		};
+
+		$(tempData2).each((i , filter) => {
+			result = Object.assign(result, newGoodsData.filter((item) => filterArr(tempData[filter[0]], item.manufacturer.name)));
 		});
+
+		getElement(result);
 	};
 
 	$controls.on('change', () => {
@@ -137,6 +132,7 @@ export const filter = () => {
 		});
 
 		createGetParams(data);
+		makeProductFilter(data, goodsData);
 		console.log(data);
 	});
 };
