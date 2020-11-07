@@ -3,7 +3,6 @@ export const getElement = (data) => {
 	let $list = $('[data-list]');
 	const fragment = document.createDocumentFragment();
 	const template = $('#card')[0].content;
-	console.log('start');
 
 	$list.html('');
 	$(data).each((i, good) => {

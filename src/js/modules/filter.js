@@ -5,7 +5,7 @@ import {getElement} from './get-element';
 export const filter = () => {
 	const $filterForm = $('#filter');
 	const $controls = $(document).find('input, select');
-	const currentPage = $filterForm.data('page');
+    const currentPage = $filterForm.data('page');
 
 	getElement(goodsData);
 
@@ -44,23 +44,22 @@ export const filter = () => {
 		window.history.pushState(null, null, url.href);
 	};
 
-	const makeProductFilter = (params, goods) => {
+	const makeProductFilter = (params, goodsData) => {
 		let tempData = {};
-		let tempData2;
-		let newGoodsData = goods;
-		tempData = Object.assign(tempData, params.params, params.pagination);
-		tempData2 = Object.entries(Object.assign(tempData, params.params, params.pagination));
-		let result = [];
+		let newGoodsData = goodsData;
+        let filterParams = Object.entries(Object.assign(tempData, params.params, params.pagination));
+        let result = [];
 
-		const filterArr = function (val1, val2) {
-			return val1 == val2;
-		};
-
-		$(tempData2).each((i , filter) => {
-			result = Object.assign(result, newGoodsData.filter((item) => filterArr(tempData[filter[0]], item.manufacturer.name)));
-		});
-
-		getElement(result);
+        newGoodsData.filter((item) => {
+            filterParams.forEach((i , param) => {
+                if (param[0] === 'manufacturer') {
+                    if (param[1] !== item.manufacturer.name) {
+                        return false;
+                    }
+                }
+            });
+        });
+        getElement(result);
 	};
 
 	$controls.on('change', () => {
@@ -78,7 +77,7 @@ export const filter = () => {
 				perPage: '',
 				page: currentPage
 			}
-		};
+        };
 
 		$controls.each((i, el) => {
 			const $el = $(el);
