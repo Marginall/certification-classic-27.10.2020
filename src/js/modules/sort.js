@@ -28,5 +28,6 @@ export const sort = (list) => {
 			}
 		}
 	});
+
 	return list;
 };

@@ -9,14 +9,13 @@ export const filter = () => {
 	const $controls = $(document).find('input, select');
 	const currentPage = $filterForm.data('page');
 
+	sort(goodsData);
 	getElement(goodsData);
 
 	const filterProducts = (params, goodsData) => {
-		let tempData = {};
-		let newGoodsData = goodsData;
-		let filterParams = Object.entries(Object.assign(tempData, params.params, params.pagination));
+		let filterParams = Object.entries(Object.assign({}, params.params));
 
-		const list = newGoodsData.filter((item) => {
+		const list = goodsData.filter((item) => {
 			let result = true;
 
 			filterParams.forEach((param) => {
