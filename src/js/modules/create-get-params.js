@@ -8,7 +8,7 @@ export const createGetParams = (data) => {
 
 		url.searchParams.set('page', tempData.page);
 
-		if (+tempData.year !== '') {
+		if (tempData.year !== '') {
 			url.searchParams.set('year', tempData.year);
 		}
 
