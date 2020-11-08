@@ -8,21 +8,21 @@ export const createGetParams = (data) => {
 
 		url.searchParams.set('page', tempData.page);
 
-		if (tempData.year !== '') {
+		if (+tempData.year !== '') {
 			url.searchParams.set('year', tempData.year);
 		}
 
 		url.searchParams.set('price', tempData.price[0] + ',' + tempData.price[1]);
 
-		if (tempData.model !== '') {
+		if (tempData.model.length) {
 			url.searchParams.set('model', tempData.model);
 		}
 
-		if (tempData.manufacturer !== '') {
+		if (tempData.manufacturer.length) {
 			url.searchParams.set('manufacturer', tempData.manufacturer);
 		}
 
-		if (tempData.brand !== '') {
+		if (tempData.brand.length) {
 			url.searchParams.set('brand', tempData.brand);
 		}
 
