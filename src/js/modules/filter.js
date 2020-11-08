@@ -1,65 +1,68 @@
 import $ from 'js#/lib/jquery';
 import goodsData from 'js#/data/goods';
 import {getElement} from './get-element';
+import {sort} from './sort';
+import {createGetParams} from './create-get-params';
 
 export const filter = () => {
 	const $filterForm = $('#filter');
 	const $controls = $(document).find('input, select');
-    const currentPage = $filterForm.data('page');
+	const currentPage = $filterForm.data('page');
 
 	getElement(goodsData);
 
-	const createGetParams = (data) => {
-		const url = new URL(window.location.href);
-		let tempData = {};
-		url.search = '';
-
-		if (data.params && data.pagination) {
-			tempData = Object.assign(tempData, data.params, data.pagination);
-
-			url.searchParams.set('page', tempData.page);
-
-			if (tempData.year !== '') {
-				url.searchParams.set('year', tempData.year);
-			}
-
-			url.searchParams.set('price', tempData.price[0] + ',' + tempData.price[1]);
-
-			if (tempData.model !== '') {
-				url.searchParams.set('model', tempData.model);
-			}
-
-			if (tempData.manufacturer !== '') {
-				url.searchParams.set('manufacturer', tempData.manufacturer);
-			}
-
-			if (tempData.brand !== '') {
-				url.searchParams.set('brand', tempData.brand);
-			}
-
-			url.searchParams.set('sort', tempData.sort);
-			url.searchParams.set('per-page', tempData.perPage);
-		}
-
-		window.history.pushState(null, null, url.href);
-	};
-
-	const makeProductFilter = (params, goodsData) => {
+	const filterProducts = (params, goodsData) => {
 		let tempData = {};
 		let newGoodsData = goodsData;
-        let filterParams = Object.entries(Object.assign(tempData, params.params, params.pagination));
-        let result = [];
+		let filterParams = Object.entries(Object.assign(tempData, params.params, params.pagination));
 
-        newGoodsData.filter((item) => {
-            filterParams.forEach((i , param) => {
-                if (param[0] === 'manufacturer') {
-                    if (param[1] !== item.manufacturer.name) {
-                        return false;
-                    }
-                }
-            });
-        });
-        getElement(result);
+		const list = newGoodsData.filter((item) => {
+			let result = true;
+
+			filterParams.forEach((param) => {
+				if (param[1].length || typeof param[1] === 'number') {
+					if (param[0] === 'manufacturer' && !param[1].includes(item.manufacturer.name)) {
+						result = result && false;
+					}
+
+					if (param[0] === 'model' && !param[1].includes(item.model.name)) {
+						result = result && false;
+					}
+
+					if (param[0] === 'year') {
+						param[1] = param[1] + '';
+						if (!param[1].includes(item.year)) {
+							result = result && false;
+						}
+					}
+
+					if (param[0] === 'brand') {
+						if (!param[1].includes(item.brand.name)) {
+							result = result && false;
+						}
+					}
+
+					if (param[0] === 'price') {
+						if (item.price.value < parseFloat(param[1][0]) || item.price.value > parseFloat(param[1][1])) {
+							console.log(1);
+							result = result && false;
+						}
+					}
+
+					if (param[0] === 'sort') {
+						
+					}
+
+				} else {
+					return false;
+				}
+			});
+
+			return result;
+		});
+
+		sort(list);
+		getElement(list);
 	};
 
 	$controls.on('change', () => {
@@ -77,7 +80,7 @@ export const filter = () => {
 				perPage: '',
 				page: currentPage
 			}
-        };
+	};
 
 		$controls.each((i, el) => {
 			const $el = $(el);
@@ -130,8 +133,8 @@ export const filter = () => {
 			}
 		});
 
-		createGetParams(data);
-		makeProductFilter(data, goodsData);
 		console.log(data);
+		createGetParams(data);
+		filterProducts(data, goodsData);
 	});
 };
